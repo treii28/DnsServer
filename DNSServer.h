@@ -64,6 +64,7 @@ class DNSServer
         String _domainName;
         unsigned char _resolvedIP[4];
         unsigned char _overrideIP[4];
+        unsigned char _offsetIP[4];
         int _currentPacketSize;
         unsigned char *_buffer;
         DNSHeader *_dnsHeader;

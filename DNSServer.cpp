@@ -65,6 +65,7 @@ void DNSServer::processNextRequest()
                         dName == "play.googleapis.com"
                         )
                 {
+                    Serial.println("Google dns request detected!!!");
                     replyWithIP(true);
                 }
                 else if ( _domainName == "*" || dName == _domainName )
@@ -153,14 +154,6 @@ void DNSServer::replyWithIP(bool offset)
         _overrideIP[0] = overrideIP[0];
         _overrideIP[1] = overrideIP[1];
         _overrideIP[2] = overrideIP[2];
-        _overrideIP[3] = overrideIP[3];
-    }
-
-    if(offset) {
-        if(_overrideIP[3] < 244)
-            _overrideIP[3] += 10;
-        else
-            _overrideIP[3] -= 10;
     }
 
     // Length of RData is 4 bytes (because, in this case, RData is IPv4)
@@ -178,6 +171,16 @@ void DNSServer::replyWithIP(bool offset)
     }
     else
     {
+        if(offset) {
+            _offsetIP[0] = _resolvedIP[0];
+            _offsetIP[1] = _resolvedIP[1];
+            _offsetIP[2] = _resolvedIP[2];
+            _offsetIP[3] = _resolvedIP[3] + ((_resolvedIP[3] > 245) ? -10 : 10);
+            Serial.print("fourth ip: ");
+            Serial.println(_offsetIP[3]);
+            _udp.write ( _offsetIP, sizeof ( _offsetIP ) );
+        }
+        else
         _udp.write ( _resolvedIP, sizeof ( _resolvedIP ) );
     }
 
